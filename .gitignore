@@ -1,0 +1,15 @@
+# IDE
+.vscode/
+
+# Pyhton
+.venv/
+venv/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Generic build folders
+build/
+out/
+dist/
