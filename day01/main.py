@@ -1,7 +1,6 @@
 import re
 from os import path
 
-
 def replace_digits(reg_match):
     digit = reg_match.group()
     match digit:
@@ -26,7 +25,6 @@ def replace_digits(reg_match):
 
 
 def extract_digit_at(line, index):
-    print(f"      index: {index}; char: {line[index]}")
     if line[index].isdigit():
         return int(line[index])
     else:
@@ -51,20 +49,32 @@ def find_last_digit(line):
             return digit
 
 
-sum = 0
+sum_part_1 = 0
 
-inputPath = path.join(path.dirname(__file__), "input.txt")
-file = open(inputPath, "r")
-lines = file.read().splitlines()
+lines = []
+with open(path.join(path.dirname(__file__), "input.txt")) as f:
+    lines = f.read().splitlines()
+
+# Part 1
 
 for line in lines:
-    print(line)
+    digits = re.sub(r'[a-z]+', '', line)
+
+    first = int(digits[0])
+    last = int(digits[-1])
+
+    sum_part_1 += 10 * first + last
+
+print(f'The sum for part 1 is {sum_part_1}')
+
+# Part 2
+
+sum_part_2 = 0
+
+for line in lines:
     first = find_first_digit(line)
     last = find_last_digit(line)
 
-    print(f"  {first}")
-    print(f"  {last}")
+    sum_part_2 += 10 * first + last
 
-    sum += 10 * first + last
-
-print(sum)
+print(f'The sum for part 2 is: {sum_part_2}')
