@@ -8,4 +8,4 @@ The code is a fairly normal Python setup. I set it up using python venvs. All re
 
 ## License
 
-This project is released under the UNLICENSE. Check the [LICENSE](/LICENSE) file for more.
+This project is released under the Apache 2.0 License. Check the [LICENSE](/LICENSE) file for more.
