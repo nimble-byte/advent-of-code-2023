@@ -1,11 +1,9 @@
 from os import path
-import re
-
-# Read input (having the input available as grid helps this time around, but since strings can be accessed like arrays it should be fine)
 
 GRID_SIZE = 140
+PART_MARKERS = ["#", "$", "%", "&", "*", "+", "-", "/", "=", "@"]
 
-
+# Read input (having the input available as grid helps this time around, but since strings can be accessed like arrays it should be fine)
 input_grid = []
 with open(path.join(path.dirname(__file__), "input.txt")) as f:
     input_grid = f.read().splitlines()
@@ -23,24 +21,20 @@ def get_surroudings(grid, line, start, end):
     # print(f"  Start col: {start_col}, end col: {end_col}")
 
     for l in range(start_line, end_line):
-
-        for c in range(start_col, end_col):
-            if l == line and c >= start and c <= end:
-                continue
-            else:
-                # print(f"    line: {l}, col: {c} - appending {grid[l][c]}")
-                surroundings.append(grid[l][c])
+        surroundings.append(list(grid[l][start_col:end_col]))
 
     return surroundings
 
 
-# Part 1
 sum_part_1 = 0
 sum_part_2 = 0
 
+part_candidates = []
+gear_markers = []
+
+
 for line in range(GRID_SIZE):
     col = 0
-    part_candidates = []
 
     while col < GRID_SIZE:
         if input_grid[line][col].isdigit():
@@ -61,20 +55,41 @@ for line in range(GRID_SIZE):
                     end = col - 1
                     match_complete = True
 
-            surroundings = get_surroudings(input_grid, line, start, end)
             part_value = int(input_grid[line][start : end + 1])
-            # print(
-            #     f"Found part value: {part_value} at {line}:{start}-{end} with surroundings of length {len(surroundings)}: {surroundings}"
-            # )
+            surroundings = get_surroudings(input_grid, line, start, end)
+            part_candidates.append((line, start, end, surroundings, part_value))
 
-            # assume anything that is not a digit is or a '.' is a part markerz`
-            if any([s != "." for s in surroundings]):
-                sum_part_1 += int(input_grid[line][start : end + 1])
-            # print(f"  {surroundings}")
             col += 1
-
+        elif input_grid[line][col] == "*":
+            gear_markers.append((line, col))
+            col += 1
         else:
             col += 1
 
+for candidate in part_candidates:
+    for line in candidate[3]:
+        if any([s in PART_MARKERS for s in line]):
+            sum_part_1 += candidate[4]
+            break
+
+for marker in gear_markers:
+    print(f"Checking gear marker at {marker[0]}:{marker[1]}")
+    parts = []
+
+    for candidate in part_candidates:
+        adjusted_line = marker[0] - candidate[0] + 1
+        adjusted_col = marker[1] - candidate[1] + 1
+        if adjusted_line >= 0 and adjusted_line < len(candidate[3]) and adjusted_col >= 0 and adjusted_col < len(candidate[3][adjusted_line]):
+            # for line in candidate[3]:
+            #     print(f"    {line}")
+            if candidate[3][adjusted_line][adjusted_col] == "*":
+                print("  MATCH")
+                parts.append(candidate[4])
+        else:
+            continue
+    if len(parts) == 2:
+        sum_part_2 += parts[0] * parts[1]
+
+
 print(f"The sum for part 1 is {sum_part_1}")
-print(f"The sum for part 2 is {sum_part_2}")
+print(f"The sum for part 2 is {sum_part_2}") # 75805607
