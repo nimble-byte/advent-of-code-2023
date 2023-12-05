@@ -35,7 +35,6 @@ def parse_map_input(chunk):
 
     return mapping
 
-
 input_chunks = []
 with open(path.join(path.dirname(__file__), "input.txt")) as f:
     input_chunks = f.read().split("\n\n")
@@ -50,9 +49,7 @@ light_to_temperature = parse_map_input(input_chunks[5])
 temperature_to_humidity = parse_map_input(input_chunks[6])
 humidity_to_location = parse_map_input(input_chunks[7])
 
-result = []
-
-for seed in seeds:
+def seed_to_location(seed):
     soil = seed_to_soil[seed]
     fertilizer = soil_to_fertilizer[soil]
     water = fertilizer_to_water[fertilizer]
@@ -60,10 +57,8 @@ for seed in seeds:
     temperature = light_to_temperature[light]
     humidity = temperature_to_humidity[temperature]
     location = humidity_to_location[humidity]
+    return location
 
-    result.append(location)
-    print(
-        f"Seed {seed}, soil {soil}, fertilizer {fertilizer}, water {water}, light {light}, temperature {temperature}, humidity {humidity}, location {location}"
-    )
+result = [seed_to_location(seed) for seed in seeds]
 
 print(f"The result for part 1 is {min(result)}")
