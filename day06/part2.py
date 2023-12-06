@@ -28,12 +28,12 @@ class Race:
         # time holding = h
         # overall time = t
         # d = (t - h) * h => 0 = h^2 - th + d
-        # use quadratic formula to solve for bounds
+        # use quadratic formula to solve for roots
         # lb = (t - sqrt(t^2 - 4d)) / 2
         # ub = (t + sqrt(t^2 - 4d)) / 2
         print(f"Time: {self.time}, Distance: {self.distance}")
-        lb = ceil((self.time - sqrt(self.time ** 2 - 4 * self.distance)) / 2)
-        ub = floor((self.time + sqrt(self.time ** 2 - 4 * self.distance)) / 2)
+        lb = ceil((self.time - sqrt(self.time ** 2 - 4 * self.distance + 1)) / 2)
+        ub = floor((self.time + sqrt(self.time ** 2 - 4 * self.distance + 1)) / 2)
 
         return ub - lb + 1
 
