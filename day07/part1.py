@@ -4,19 +4,48 @@ from collections import Counter
 
 
 class CardType(Enum):
-    D2 = (2,)
-    D3 = (3,)
-    D4 = (4,)
-    D5 = (5,)
-    D6 = (6,)
-    D7 = (7,)
-    D8 = (8,)
-    D9 = (9,)
-    T = (10,)
-    J = (11,)
-    Q = (12,)
-    K = (13,)
+    D2 = 2
+    D3 = 3
+    D4 = 4
+    D5 = 5
+    D6 = 6
+    D7 = 7
+    D8 = 8
+    D9 = 9
+    T = 10
+    J = 11
+    Q = 12
+    K = 13
     A = 14
+
+    def __str__(self) -> str:
+        match self.name:
+            case "D2":
+                return "2"
+            case "D3":
+                return "3"
+            case "D4":
+                return "4"
+            case "D5":
+                return "5"
+            case "D6":
+                return "6"
+            case "D7":
+                return "7"
+            case "D8":
+                return "8"
+            case "D9":
+                return "9"
+            case "T":
+                return "T"
+            case "J":
+                return "J"
+            case "Q":
+                return "Q"
+            case "K":
+                return "K"
+            case "A":
+                return "A"
 
     @classmethod
     def parse_char(cls, char):
@@ -50,13 +79,16 @@ class CardType(Enum):
 
 
 class HandType(Enum):
-    HIGH_CARD = (0,)
-    ONE_PAIR = (1,)
-    TWO_PAIRS = (2,)
-    THREE_OF_A_KIND = (3,)
-    FULL_HOUSE = (4,)
-    FOUR_OF_A_KIND = (5,)
-    FIVE_OF_A_KIND = 6
+    HIGH_CARD = 1
+    ONE_PAIR = 2
+    TWO_PAIRS = 3
+    THREE_OF_A_KIND = 4
+    FULL_HOUSE = 5
+    FOUR_OF_A_KIND = 6
+    FIVE_OF_A_KIND = 7
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Hand:
@@ -66,34 +98,42 @@ class Hand:
         for c in string:
             self.cards.append(CardType.parse_char(c))
 
-    def get_card_type(self):
-        counts = Counter(self.cards).values()
+    def __str__(self) -> str:
+        # return f"{"".join([str(card) for card in self.cards])} ({self.bid}) -> {self.get_card_type()}"
+        return f"{"".join([str(card) for card in self.cards])} ({self.bid})"
 
-        if any(count == 5 for count in counts):
-            return HandType.FIVE_OF_A_KIND
-        elif any(count == 4 for count in counts):
-            return HandType.FOUR_OF_A_KIND
-        elif any(count == 3 for count in counts) and any(
-            count == 2 for count in counts
-        ):
-            return HandType.FULL_HOUSE
-        elif any(count == 3 for count in counts):
-            return HandType.THREE_OF_A_KIND
-        elif filter(lambda count: count == 2, counts) == 2:
-            return HandType.TWO_PAIRS
-        elif any(count == 2 for count in counts):
-            return HandType.ONE_PAIR
-        else:
-            return HandType.HIGH_CARD
+    def get_card_type(self) -> HandType:
+        counts = [count for _, count in Counter(self.cards).most_common()]
+
+        match counts:
+            case [5, *_]:
+                return HandType.FIVE_OF_A_KIND
+            case [4, *_]:
+                return HandType.FOUR_OF_A_KIND
+            case [3, 2, *_]:
+                return HandType.FULL_HOUSE
+            case [3, *_]:
+                return HandType.THREE_OF_A_KIND
+            case [2, 2, *_]:
+                return HandType.TWO_PAIRS
+            case [2, *_]:
+                return HandType.ONE_PAIR
+            case _ :
+                return HandType.HIGH_CARD
 
 
 hands = []
-with open(path.join(path.dirname(__file__), "example_input.txt")) as f:
+with open(path.join(path.dirname(__file__), "input.txt")) as f:
     for cards, bid in [line.split(" ") for line in f.read().splitlines()]:
         hands.append(Hand(cards, bid))
 
+
+def sort_key(hand):
+    return hand.get_card_type().value, [card.value for card in hand.cards]
+
+
 # this needs a bit of work
-ranked_hands = sorted(hands)
+ranked_hands = sorted(hands, key=sort_key)
 
 result = sum([hand.bid * (idx + 1) for idx, hand in enumerate(ranked_hands)])
 
