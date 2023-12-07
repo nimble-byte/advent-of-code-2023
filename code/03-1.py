@@ -4,19 +4,19 @@ import re
 # Read input (having the input available as grid helps this time around, but since strings can be accessed like arrays it should be fine)
 
 # this works for the given input, but is not smart in general
-GRID_SIZE = 140
 
 input_grid = []
-with open(path.join(path.dirname(__file__), "input.txt")) as f:
+with open(path.join(path.dirname(__file__), "../inputs/03.txt")) as f:
     input_grid = f.read().splitlines()
 
+LINE_LENGTH = len(input_grid[0])
 
 def get_surroudings(grid, line, start, end):
     surroundings = []
     start_line = max(0, line - 1)
-    end_line = min(GRID_SIZE, line + 2)
+    end_line = min(LINE_LENGTH, line + 2)
     start_col = max(0, start - 1)
-    end_col = min(GRID_SIZE, end + 2)
+    end_col = min(LINE_LENGTH, end + 2)
 
     for l in range(start_line, end_line):
 
@@ -33,11 +33,11 @@ def get_surroudings(grid, line, start, end):
 sum_part_1 = 0
 sum_part_2 = 0
 
-for line in range(GRID_SIZE):
+for line in range(LINE_LENGTH):
     col = 0
     part_candidates = []
 
-    while col < GRID_SIZE:
+    while col < LINE_LENGTH:
         if input_grid[line][col].isdigit():
             start = col
             end = col
@@ -45,9 +45,9 @@ for line in range(GRID_SIZE):
             match_complete = False
             col += 1
 
-            while not match_complete and col < GRID_SIZE:
+            while not match_complete and col < LINE_LENGTH:
                 if input_grid[line][col].isdigit():
-                    if col == GRID_SIZE - 1:
+                    if col == LINE_LENGTH - 1:
                         end = col
                         match_complete = True
                     col += 1

@@ -36,7 +36,7 @@ def parse_map_input(chunk):
     return mapping
 
 input_chunks = []
-with open(path.join(path.dirname(__file__), "input.txt")) as f:
+with open(path.join(path.dirname(__file__), "../inputs/05.txt")) as f:
     input_chunks = f.read().split("\n\n")
 
 seeds = [int(seed) for seed in re.findall(r"\d+", input_chunks[0])]

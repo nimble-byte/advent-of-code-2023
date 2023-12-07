@@ -4,7 +4,7 @@ import re
 result = 0
 
 lines = []
-with open(path.join(path.dirname(__file__), "input.txt")) as f:
+with open(path.join(path.dirname(__file__), "../inputs/01.txt")) as f:
     lines = f.read().splitlines()
 
 

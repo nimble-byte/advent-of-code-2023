@@ -4,7 +4,7 @@ from os import path
 
 # Read input
 lines = []
-with open(path.join(path.dirname(__file__), "input.txt")) as f:
+with open(path.join(path.dirname(__file__), "../inputs/04.txt")) as f:
     lines = f.read().splitlines()
 
 result = 0

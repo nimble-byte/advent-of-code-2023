@@ -79,7 +79,7 @@ def is_in_range(ranges, value):
 
 
 input_chunks = []
-with open(path.join(path.dirname(__file__), "input.txt")) as f:
+with open(path.join(path.dirname(__file__), "../inputs/05.txt")) as f:
     input_chunks = f.read().split("\n\n")
 
 seed_ranges = parse_seed_ranges(input_chunks[0])

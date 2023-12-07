@@ -29,13 +29,13 @@ def extract_game_info(line):
 result = 0
 
 lines = []
-with open(path.join(path.dirname(__file__), "input.txt")) as f:
+with open(path.join(path.dirname(__file__), "../inputs/02.txt")) as f:
     lines = f.read().splitlines()
 
 for line in lines:
     game = extract_game_info(line)
 
-    if game["red"] <= MAX_RED and game["green"] <= MAX_GREEN and game["blue"] <= MAX_BLUE:
-        result += game["game"]
+
+    result += game["red"] * game["green"] * game["blue"]
 
 print(f"The result for part 1 is {result}")
