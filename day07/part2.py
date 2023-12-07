@@ -4,6 +4,7 @@ from collections import Counter
 
 
 class CardType(Enum):
+    J = 1
     D2 = 2
     D3 = 3
     D4 = 4
@@ -13,10 +14,9 @@ class CardType(Enum):
     D8 = 8
     D9 = 9
     T = 10
-    J = 11
-    Q = 12
-    K = 13
-    A = 14
+    Q = 11
+    K = 12
+    A = 13
 
     def __str__(self) -> str:
         match self.name:
@@ -102,6 +102,7 @@ class Hand:
         return f"{"".join([str(card) for card in self.cards])} ({self.bid})"
 
     def get_hand_type(self) -> HandType:
+        # fixme: account for Jokers now
         counts = [count for _, count in Counter(self.cards).most_common()]
 
         match counts:
@@ -122,7 +123,7 @@ class Hand:
 
 
 hands = []
-with open(path.join(path.dirname(__file__), "input.txt")) as f:
+with open(path.join(path.dirname(__file__), "example_input.txt")) as f:
     for cards, bid in [line.split(" ") for line in f.read().splitlines()]:
         hands.append(Hand(cards, bid))
 
@@ -137,3 +138,4 @@ ranked_hands = sorted(hands, key=sort_key)
 result = sum([hand.bid * (idx + 1) for idx, hand in enumerate(ranked_hands)])
 
 print(f"The result for part 1 is: {result}")
+# example result 5905
