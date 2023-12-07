@@ -102,8 +102,14 @@ class Hand:
         return f"{"".join([str(card) for card in self.cards])} ({self.bid})"
 
     def get_hand_type(self) -> HandType:
-        # fixme: account for Jokers now
-        counts = [count for _, count in Counter(self.cards).most_common()]
+        card_counts = Counter(self.cards)
+        joker_count = card_counts[CardType.J]
+
+        if joker_count > 0 and joker_count < 5:
+            del card_counts[CardType.J]
+            card_counts[card_counts.most_common(1)[0][0]] += joker_count
+
+        counts = [count for _, count in card_counts.most_common()]
 
         match counts:
             case [5, *_]:
@@ -123,19 +129,17 @@ class Hand:
 
 
 hands = []
-with open(path.join(path.dirname(__file__), "example_input.txt")) as f:
+with open(path.join(path.dirname(__file__), "input.txt")) as f:
     for cards, bid in [line.split(" ") for line in f.read().splitlines()]:
         hands.append(Hand(cards, bid))
 
 
 def sort_key(hand):
-    return hand.get_card_type().value, [card.value for card in hand.cards]
+    return hand.get_hand_type().value, [card.value for card in hand.cards]
 
 
-# this needs a bit of work
 ranked_hands = sorted(hands, key=sort_key)
 
 result = sum([hand.bid * (idx + 1) for idx, hand in enumerate(ranked_hands)])
 
-print(f"The result for part 1 is: {result}")
-# example result 5905
+print(f"The result for part 2 is: {result}")
