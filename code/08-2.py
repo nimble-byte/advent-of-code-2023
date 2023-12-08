@@ -1,16 +1,26 @@
 from os import path
 import re
+from math import lcm
 
 INSTRUCT_L = "L"
 INSTRUCT_R = "R"
 
+
+def instruction_generator(chars):
+    i = 0
+    while True:
+        yield chars[i % len(chars)]
+        i += 1
+
+
 input = open(path.join(path.dirname(__file__), "../inputs/08.txt"), "r").read()
 
 instructions, lines = input.split("\n\n")
+instructions = instruction_generator(instructions)
 lines = lines.splitlines()
 
 
-class Path:
+class Node:
     def __init__(self, line):
         left, right = re.search(r"(\w{3}), (\w{3})", line).groups()
         self.left = left
@@ -23,20 +33,23 @@ class Path:
             return self.right
 
 
-map = {}
+nodes = {}
 
 for line in lines:
     name = line.split("=")[0].strip()
-    map[name] = Path(line)
+    nodes[name] = Node(line)
 
-nodes = list(filter(lambda node: node[-1] == "A", map.keys()))
+start_nodes = list(filter(lambda node: node.endswith("A"), nodes.keys()))
 solution = 0
 
-while any(node[-1] != "Z" for node in nodes):
-    instruction = instructions[solution % len(instructions)]
-    for idx, node in enumerate(nodes):
-        nodes[idx] = map[node].get_next(instruction)
+def get_cycle_length(node):
+    steps = 0
+    current_node = node
+    while not current_node.endswith("Z"):
+        current_node = nodes[current_node].get_next(next(instructions))
+        steps += 1
+    return steps
 
-    solution += 1
+solution = lcm(*map(get_cycle_length, start_nodes))
 
 print(f"The solution for 07-2 is: {solution}")
